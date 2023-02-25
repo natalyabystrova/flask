@@ -8,11 +8,19 @@ USERS = {
     3: "Peter",
 }
 
-@users_app.route("/", endpoint="list")
-def users_list():
-    return render_template("users/list.html", users=USERS)
+@users_app.route("/")
+def user_list():
+    return render_template(
+        "users/list.html",
+        users=USERS
+    )
 
 
+# @users_app.route("/", endpoint="list")
+# def users_list():
+#     return render_template("users/list.html", users=USERS)
+#
+#
 @users_app.route("/<int:user_id>/", endpoint="details")
 def user_details(user_id: int):
     try:
