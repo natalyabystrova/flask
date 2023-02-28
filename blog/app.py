@@ -6,6 +6,7 @@ from blog.views.articles import articles_app
 from blog.models.database import db
 from blog.views.auth import login_manager, auth_app
 import os
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
@@ -94,7 +95,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/blog.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 cfg_name = os.environ.get("CONFIG_NAME") or "ProductionConfig"
-app.config.from_object(f"blog.configs.{cfg_name}")
+# app.config.from_object(f"blog.configs.{cfg_name}")
+migrate = Migrate(app, db)
+# app.register_blueprint(db)
 
 
 @app.cli.command("init-db")
