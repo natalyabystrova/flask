@@ -7,6 +7,7 @@ from blog.models.database import db
 from blog.views.auth import login_manager, auth_app
 import os
 from flask_migrate import Migrate
+from blog.models import User
 
 app = Flask(__name__)
 
@@ -115,9 +116,11 @@ def create_users():
     Run in your terminal:
     flask create-users
     > done! created users: <User #1 'admin'> <User #2 'james'> """
-    from blog.models import User
-    admin = User(username="admin", is_staff=True)
-    james = User(username="james")
+    admin = User()
+    admin.username = "admin"
+    admin.is_staff = True
+    james = User()
+    james.username = "james"
     db.session.add(admin)
     db.session.add(james)
     db.session.commit()
