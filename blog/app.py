@@ -8,6 +8,7 @@ from blog.views.auth import login_manager, auth_app
 import os
 from flask_migrate import Migrate
 from blog.models import User
+from blog.security import flask_bcrypt
 
 app = Flask(__name__)
 
@@ -91,8 +92,9 @@ app.register_blueprint(articles_app, url_prefix="/articles")
 app.config["SECRET_KEY"] = "abcdefg123456"
 app.register_blueprint(auth_app, url_prefix="/auth")
 login_manager.init_app(app)
+flask_bcrypt.init_app(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/blog.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://user:password@localhost:5432/blog"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 cfg_name = os.environ.get("CONFIG_NAME") or "ProductionConfig"
@@ -101,29 +103,30 @@ migrate = Migrate(app, db)
 # app.register_blueprint(db)
 
 
-@app.cli.command("init-db")
-def init_db():
-    """
-    Run in your terminal: flask init-db
-    """
-    db.create_all()
-    print("done!")
+# @app.cli.command("init-db")
+# def init_db():
+#     """
+#     Run in your terminal: flask init-db
+#     """
+#     db.create_all()
+#     print("done!")
 
 
-@app.cli.command("create-users")
-def create_users():
+@app.cli.command("create-admin")
+def create_admin():
     """
     Run in your terminal:
-    flask create-users
-    > done! created users: <User #1 'admin'> <User #2 'james'> """
-    admin = User()
+    ➜ flask create-admin
+    > created admin: <User #1 'admin'> """
+    admin = User(username="admin", is_staff=True)
     admin.username = "admin"
     admin.is_staff = True
-    james = User()
-    james.username = "james"
+    # james = User()
+    # james.username = "james"
+    admin.password = os.environ.get("ADMIN_PASSWORD") or "adminpass"
     db.session.add(admin)
-    db.session.add(james)
+    # db.session.add(james)
     db.session.commit()
 
-    print("done! created users:", admin, james)
+    print("created admin:", admin)
 
