@@ -9,6 +9,7 @@ import os
 from flask_migrate import Migrate
 from blog.models import User
 from blog.security import flask_bcrypt
+from blog.views.authors import authors_app
 
 app = Flask(__name__)
 
@@ -93,6 +94,7 @@ app.config["SECRET_KEY"] = "abcdefg123456"
 app.register_blueprint(auth_app, url_prefix="/auth")
 login_manager.init_app(app)
 flask_bcrypt.init_app(app)
+app.register_blueprint(authors_app, url_prefix="/authors")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://user:password@localhost:5432/blog"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
