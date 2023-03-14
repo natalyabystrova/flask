@@ -11,6 +11,7 @@ from blog.models import User
 from blog.security import flask_bcrypt
 from blog.views.authors import authors_app
 from blog.models import Tag
+from blog.admin import admin
 
 app = Flask(__name__)
 
@@ -104,6 +105,7 @@ cfg_name = os.environ.get("CONFIG_NAME") or "ProductionConfig"
 # app.config.from_object(f"blog.configs.{cfg_name}")
 migrate = Migrate(app, db)
 # app.register_blueprint(db)
+admin.init_app(app)
 
 
 # @app.cli.command("init-db")
