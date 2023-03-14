@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from blog.models import User
 from blog.security import flask_bcrypt
 from blog.views.authors import authors_app
+from blog.models import Tag
 
 app = Flask(__name__)
 
@@ -131,4 +132,24 @@ def create_admin():
     db.session.commit()
 
     print("created admin:", admin)
+
+
+@app.cli.command("create-tags")
+def create_tags():
+    """
+    Run in your terminal:
+    ➜ flask create-tags
+    """
+    for name in [
+            "flask",
+            "django",
+            "python",
+            "sqlalchemy",
+            "news",
+        ]:
+        tag = Tag(name=name)
+        db.session.add(tag)
+
+        db.session.commit()
+        print("created tags")
 
