@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from blog.models.database import db
 
+
 class Author(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
@@ -10,4 +11,4 @@ class Author(db.Model):
     articles = relationship("Article", back_populates="author")
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.last_name} {self.user.first_name}"

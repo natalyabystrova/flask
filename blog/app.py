@@ -12,22 +12,27 @@ from blog.security import flask_bcrypt
 from blog.views.authors import authors_app
 from blog.models import Tag
 from blog.admin import admin
+from blog.api import init_api
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/greet/<name>/")
 def greet_name(name: str):
     return f"Hello {name}!"
+
 
 @app.route("/user/")
 def read_user():
     name = request.args.get("name")
     surname = request.args.get("surname")
     return f"User {name or '[no name]'} {surname or '[no surname]'}"
+
 
 @app.route("/status/", methods=["GET", "POST"])
 def custom_status_code():
@@ -106,6 +111,7 @@ cfg_name = os.environ.get("CONFIG_NAME") or "ProductionConfig"
 migrate = Migrate(app, db)
 # app.register_blueprint(db)
 admin.init_app(app)
+api = init_api(app)
 
 
 # @app.cli.command("init-db")

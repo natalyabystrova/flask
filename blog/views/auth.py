@@ -6,24 +6,27 @@ from blog.models.database import db
 from blog.forms.user import RegistrationForm, LoginForm
 from werkzeug.exceptions import NotFound
 
+__all__ = [
+    "login_manager",
+    "auth_app",
+]
+
 
 auth_app = Blueprint("auth_app", __name__)
 
 login_manager = LoginManager()
 login_manager.login_view = "auth_app.login"
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter_by(id=user_id).one_or_none()
+
 
 @login_manager.unauthorized_handler
 def unauthorized():
     return redirect(url_for("auth_app.login"))
 
-__all__ = [
-    "login_manager",
-    "auth_app",
-]
 
 @auth_app.route("/login/", methods=["GET", "POST"], endpoint="login")
 def login():
@@ -57,16 +60,20 @@ def login():
     # login_user(user)
     # return redirect(url_for("index"))
 
+
 @auth_app.route("/login-as/", methods=["GET", "POST"], endpoint="login-as")
 def login_as():
-    if not (current_user.is_authenticated and current_user.is_staff): # non-admin users should not know about this feature
+    # non-admin users should not know about this feature
+    if not (current_user.is_authenticated and current_user.is_staff):
         raise NotFound
+
 
 @auth_app.route("/logout/", endpoint="logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
 
 @auth_app.route("/secret/")
 @login_required
@@ -90,13 +97,11 @@ def register():
             form.email.errors.append("email already exists!")
             return render_template("auth/register.html", form=form)
 
-        user = User(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            username=form.username.data,
-            email=form.email.data,
-            is_staff=False,
-        )
+        user = User()
+        user.first_name = form.first_name.data,
+        user.last_name = form.last_name.data,
+        user.email = form.email.data,
+        user.is_staff = False,
         user.password = form.password.data
         db.session.add(user)
         try:
