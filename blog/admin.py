@@ -16,14 +16,10 @@ class CustomView(ModelView):
 
 
     def inaccessible_callback(self, name, **kwargs):
-
-
-# redirect to login page if user doesn't have access return redirect(url_for("auth_app.login"))
-# Create admin with custom base template
-
-
-admin = Admin(name="Blog Admin", template_mode="bootstrap4")
-# Add views
+        # redirect to login page if user doesn't have access return redirect(url_for("auth_app.login"))
+        # Create admin with custom base template
+        admin = Admin(name="Blog Admin", template_mode="bootstrap4")
+        # Add views
 
 
 class TagAdminView(CustomView):
