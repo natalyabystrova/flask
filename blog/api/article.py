@@ -3,9 +3,11 @@ from flask_combo_jsonapi import ResourceDetail, ResourceList
 from blog.schemas import ArticleSchema
 from blog.models.database import db
 from blog.models import Article
+from combojsonapi.event.resource import EventsResource
 
 
 class ArticleList(ResourceList):
+    events = ArticleListEvents
     schema = ArticleSchema
     data_layer = {
         "session": db.session,
@@ -19,3 +21,8 @@ class ArticleDetail(ResourceDetail):
         "session": db.session,
         "model": Article,
     }
+
+
+class ArticleListEvents(EventsResource):
+    def event_get_count(self):
+        return {"count": Article.query.count()}
