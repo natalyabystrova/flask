@@ -1,15 +1,17 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 from werkzeug.exceptions import NotFound
 from blog.models.database import db
-from blog.models import Author, Article
+from blog.models import Author, Article, Tag
 from blog.forms.article import CreateArticleForm
 
 
 articles_app = Blueprint("articles_app", __name__)
 
 ARTICLES = ["Flask", "Django", "JSON:API"]
+
 
 @articles_app.route("/", endpoint="list")
 def articles_list():
@@ -18,13 +20,15 @@ def articles_list():
 
 
 @articles_app.route("/<int:article_id>/", endpoint="details")
-def article_detals(article_id):
+def article_details(article_id):
+    # подгружаем связанные теги!
     article = Article.query.filter_by(id=article_id).options(
-        joinedload(Article.tags) # подгружаем связанные теги!
+        joinedload(Article.tags)
     ).one_or_none()
     if article is None:
         raise NotFound
     return render_template("articles/details.html", article=article)
+
 
 @articles_app.route("/create/", methods=["GET", "POST"], endpoint="create")
 @login_required

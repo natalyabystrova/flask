@@ -13,3 +13,6 @@ SQLAlchemy==2.0.4
 typing-extensions==4.5.0
 Werkzeug==2.2.3
 psycopg2-binary==2.9.5
+ComboJSONAPI==1.0.5
+apispec==2.0.2
+PyYAML==5.3.1
