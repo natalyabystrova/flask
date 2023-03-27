@@ -6,7 +6,7 @@ services:
       dockerfile: ./Dockerfile
       context: .
     environment:
-      SQLALCHEMY_DATABASE_URI: postgresql://user:password@pg:5432/blog
+      SQLALCHEMY_DATABASE_URI: postgresql://postgres:postgres@pg:5432/postgres
       CONFIG_NAME: DevConfig
     volumes:
       - ./blog:/app/blog

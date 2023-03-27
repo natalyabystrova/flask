@@ -67,6 +67,7 @@ def process_after_request(response):
 
     return response
 
+
 @app.route("/power/")
 def power_value():
     x = request.args.get("x") or ""
@@ -89,9 +90,10 @@ def do_zero_division():
 
 @app.errorhandler(ZeroDivisionError)
 def handle_zero_division_error(error):
-    print(error) # prints str version of error: 'division by zero'
+    print(error)  # prints str version of error: 'division by zero'
     app.logger.exception("Here's traceback for zero division error")
     return "Never divide by zero!", 400
+
 
 app.register_blueprint(users_app, url_prefix="/users")
 
@@ -103,7 +105,7 @@ login_manager.init_app(app)
 flask_bcrypt.init_app(app)
 app.register_blueprint(authors_app, url_prefix="/authors")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://user:password@localhost:5432/blog"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 cfg_name = os.environ.get("CONFIG_NAME") or "ProductionConfig"
@@ -129,14 +131,11 @@ def create_admin():
     Run in your terminal:
     ➜ flask create-admin
     > created admin: <User #1 'admin'> """
-    admin = User(username="admin", is_staff=True)
-    admin.username = "admin"
-    admin.is_staff = True
-    # james = User()
-    # james.username = "james"
-    admin.password = os.environ.get("ADMIN_PASSWORD") or "adminpass"
-    db.session.add(admin)
-    # db.session.add(james)
+    user = User()
+    user.username = "admin"
+    user.is_staff = True
+    user.password = os.environ.get("ADMIN_PASSWORD") or "adminpass"
+    db.session.add(user)
     db.session.commit()
 
     print("created admin:", admin)
@@ -149,15 +148,14 @@ def create_tags():
     ➜ flask create-tags
     """
     for name in [
-            "flask",
-            "django",
-            "python",
-            "sqlalchemy",
-            "news",
-        ]:
+        "flask",
+        "django",
+        "python",
+        "sqlalchemy",
+        "news",
+    ]:
         tag = Tag(name=name)
         db.session.add(tag)
 
         db.session.commit()
         print("created tags")
-
