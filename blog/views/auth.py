@@ -101,10 +101,9 @@ def register():
         user.first_name = form.first_name.data,
         user.last_name = form.last_name.data,
         user.email = form.email.data,
-        user.is_staff = False,
         user.password = form.password.data
-        db.session.add(user)
         try:
+            db.session.add(user)
             db.session.commit()
         except IntegrityError:
             current_app.logger.exception("Could not create user!")
